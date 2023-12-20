@@ -12,6 +12,31 @@ linters-settings:
       - '.*'
   varnamelen:
     min-name-length: 1
+  depguard:
+    rules:
+      main:
+        # List of allowed packages.
+        allow:
+          - $gostd
+          - github.com/OpenPeeDeeP
+          - github.com/spf13/viper
+          - battle-of-monsters/
+          - github.com/gin-gonic/gin
+          - github.com/golang-migrate/migrate/v4
+          - github.com/golang-migrate/migrate/v4/
+          - github.com/spf13/cobra
+          - modernc.org/sqlite
+          - github.com/onsi/ginkgo/v2
+          - github.com/onsi/gomega
+          - github.com/go-playground/validator/v10
+  revive:
+    rules:
+      - name: dot-imports
+        severity: warning
+        disabled: true
+  goimports:
+    local-prefixes: github.com/org/project
+  
 
 issues:
   exclude-rules:

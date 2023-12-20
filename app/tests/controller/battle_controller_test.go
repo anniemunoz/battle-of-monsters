@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -174,7 +175,7 @@ var _ = Describe("BattleController", func() {
 		})
 
 		JustBeforeEach(func() {
-			req, _ := http.NewRequest(http.MethodDelete, "/battle/"+fmt.Sprintf("%v", dr.ID), nil)
+			req, _ := http.NewRequest(http.MethodDelete, "/battle/"+strconv.FormatUint(uint64(dr.ID), 10), nil)
 			response = utilstests.ExecuteRequest(req)
 		})
 

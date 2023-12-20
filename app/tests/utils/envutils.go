@@ -9,7 +9,7 @@ import (
 )
 
 // this should match the project root folder name.
-const rootFolder = "assessment-cc-go-sr-01"
+const rootFolder = "battle-of-monsters"
 
 // LoadEnv load the env files relative to the root folder from any nested test directory.
 func LoadEnv() {

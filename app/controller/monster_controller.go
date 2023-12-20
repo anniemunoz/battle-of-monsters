@@ -4,14 +4,13 @@ import (
 	"battle-of-monsters/app/db"
 	"battle-of-monsters/app/models"
 	"encoding/csv"
-	// "errors"
+
 	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	// "gorm.io/gorm"
 )
 
 func FetchMonster(context *gin.Context) {
@@ -20,6 +19,7 @@ func FetchMonster(context *gin.Context) {
 	var monster models.Monster
 	if result := db.CONN.First(&monster, monsterID); result.Error != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+
 		return
 	}
 
@@ -28,16 +28,17 @@ func FetchMonster(context *gin.Context) {
 
 func CreateMonster(context *gin.Context) {
 	var monsterRequest struct {
-		Name     string `json:"name" binding:"required,gte=1,lte=255"`
-		Attack   uint   `json:"attack" binding:"required"`
-		Defense  uint   `json:"defense" binding:"required"`
-		Hp       uint   `json:"hp" binding:"required"`
-		Speed    uint   `json:"speed" binding:"required"`
-		ImageURL string `json:"imageUrl" binding:"required,gte=1,lte=255"`
+		Name     string `binding:"required,gte=1,lte=255" json:"name"`
+		Attack   uint   `binding:"required"               json:"attack"`
+		Defense  uint   `binding:"required"               json:"defense"`
+		Hp       uint   `binding:"required"               json:"hp"`
+		Speed    uint   `binding:"required"               json:"speed"`
+		ImageURL string `binding:"required,gte=1,lte=255" json:"imageUrl"`
 	}
 
 	if err := context.BindJSON(&monsterRequest); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
 	}
 
@@ -52,6 +53,7 @@ func CreateMonster(context *gin.Context) {
 
 	if result := db.CONN.Create(&monster); result.Error != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": result.Error})
+
 		return
 	}
 
@@ -64,13 +66,13 @@ func UpdateMonster(context *gin.Context) {
 	monsterID := context.Param("monsterID")
 
 	var monsterRequest struct {
-		ID       uint   `json:"id" binding:"required"`
-		Name     string `json:"name" binding:"required,gte=1,lte=255"`
-		Attack   uint   `json:"attack" binding:"required"`
-		Defense  uint   `json:"defense" binding:"required"`
-		Hp       uint   `json:"hp" binding:"required"`
-		Speed    uint   `json:"speed" binding:"required"`
-		ImageURL string `json:"imageUrl" binding:"required,gte=1,lte=255"`
+		ID       uint   `binding:"required"               json:"id"`
+		Name     string `binding:"required,gte=1,lte=255" json:"name"`
+		Attack   uint   `binding:"required"               json:"attack"`
+		Defense  uint   `binding:"required"               json:"defense"`
+		Hp       uint   `binding:"required"               json:"hp"`
+		Speed    uint   `binding:"required"               json:"speed"`
+		ImageURL string `binding:"required,gte=1,lte=255" json:"imageUrl"`
 	}
 
 	if err := context.BindJSON(&monsterRequest); err != nil {
@@ -83,6 +85,7 @@ func UpdateMonster(context *gin.Context) {
 
 	if result := db.CONN.First(&monster, monsterID); result.Error != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+
 		return
 	}
 
@@ -95,6 +98,7 @@ func UpdateMonster(context *gin.Context) {
 
 	if result := db.CONN.Save(&monster); result.Error != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": result.Error})
+
 		return
 	}
 
@@ -108,11 +112,13 @@ func DeleteMonster(context *gin.Context) {
 
 	if result := db.CONN.First(&monster, monsterID); result.Error != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+
 		return
 	}
 
 	if result := db.CONN.Delete(&models.Monster{}, monsterID); result.Error != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": result.Error})
+
 		return
 	}
 
@@ -120,7 +126,7 @@ func DeleteMonster(context *gin.Context) {
 }
 
 type csvUploadInput struct {
-	CsvFile *multipart.FileHeader `form:"file" binding:"required"`
+	CsvFile *multipart.FileHeader `binding:"required" form:"file"`
 }
 
 func ImportCSV(context *gin.Context) {

@@ -8,10 +8,13 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
+
+const monsters = "/monsters/"
 
 var _ = Describe("MonsterController", func() {
 	utilstests.LoadEnv()
@@ -63,7 +66,7 @@ var _ = Describe("MonsterController", func() {
 
 			It("body should have equivalent values", func() {
 				l, _ := utilstests.DeserializeList(response.Body.String())
-				Expect(len(l)).To(Equal(1))
+				Expect(l).To(HaveLen(1))
 				for _, m := range l {
 					Expect(m["id"]).To(BeEquivalentTo(monster.ID))
 					Expect(m["name"]).To(Equal("Blue Snake"))
@@ -84,7 +87,7 @@ var _ = Describe("MonsterController", func() {
 		var expectedURL = "https://fsl-assessment-public-files.s3.amazonaws.com/assessment-cc-01/blue-snake.png"
 
 		JustBeforeEach(func() {
-			req, _ := http.NewRequest(http.MethodGet, "/monsters/"+fmt.Sprintf("%v", monster.ID), nil)
+			req, _ := http.NewRequest(http.MethodGet, monsters+strconv.FormatUint(uint64(monster.ID), 10), nil)
 			response = utilstests.ExecuteRequest(req)
 		})
 
@@ -218,7 +221,8 @@ var _ = Describe("MonsterController", func() {
 		})
 
 		JustBeforeEach(func() {
-			req, _ := http.NewRequest(http.MethodPut, "/monsters/"+fmt.Sprintf("%v", payloadID), bytes.NewBuffer(payload))
+			req, _ := http.NewRequest(http.MethodPut, monsters+
+				strconv.FormatUint(uint64(payloadID), 10), bytes.NewBuffer(payload))
 			response = utilstests.ExecuteRequest(req)
 		})
 
@@ -313,7 +317,7 @@ var _ = Describe("MonsterController", func() {
 		})
 
 		JustBeforeEach(func() {
-			req, _ := http.NewRequest(http.MethodDelete, "/monsters/"+fmt.Sprintf("%v", dragon.ID), nil)
+			req, _ := http.NewRequest(http.MethodDelete, monsters+strconv.FormatUint(uint64(dragon.ID), 10), nil)
 			response = utilstests.ExecuteRequest(req)
 		})
 
